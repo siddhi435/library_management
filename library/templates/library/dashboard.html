@@ -1,0 +1,78 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">ReadFlow Dashboard</h1>
+    <p class="text-gray-600">Manage your library efficiently</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
+        <div class="flex items-center">
+            <i class="fas fa-book text-blue-500 text-2xl mr-4"></i>
+            <div>
+                <p class="text-gray-600">Total Books</p>
+                <p class="text-2xl font-bold text-gray-800">{{ total_books }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
+        <div class="flex items-center">
+            <i class="fas fa-users text-green-500 text-2xl mr-4"></i>
+            <div>
+                <p class="text-gray-600">Total Members</p>
+                <p class="text-2xl font-bold text-gray-800">{{ total_members }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
+        <div class="flex items-center">
+            <i class="fas fa-share-square text-yellow-500 text-2xl mr-4"></i>
+            <div>
+                <p class="text-gray-600">Books Issued</p>
+                <p class="text-2xl font-bold text-gray-800">{{ total_issued }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500">
+        <div class="flex items-center">
+            <i class="fas fa-chart-bar text-purple-500 text-2xl mr-4"></i>
+            <div>
+                <p class="text-gray-600">Available</p>
+                <p class="text-2xl font-bold text-gray-800">{{ total_books|add:"-total_issued" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <a href="{% url 'book_list' %}" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition cursor-pointer">
+        <div class="text-center">
+            <i class="fas fa-plus-circle text-blue-500 text-3xl mb-3"></i>
+            <h3 class="text-lg font-semibold text-gray-800">Add New Book</h3>
+            <p class="text-gray-600 mt-2">Add new books to the library collection</p>
+        </div>
+    </a>
+
+    <a href="{% url 'member_list' %}" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition cursor-pointer">
+        <div class="text-center">
+            <i class="fas fa-user-plus text-green-500 text-3xl mb-3"></i>
+            <h3 class="text-lg font-semibold text-gray-800">Add Member</h3>
+            <p class="text-gray-600 mt-2">Register new library members</p>
+        </div>
+    </a>
+
+    <a href="{% url 'issue_book' %}" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition cursor-pointer">
+        <div class="text-center">
+            <i class="fas fa-hand-holding text-yellow-500 text-3xl mb-3"></i>
+            <h3 class="text-lg font-semibold text-gray-800">Issue Book</h3>
+            <p class="text-gray-600 mt-2">Issue books to library members</p>
+        </div>
+    </a>
+</div>
+{% endblock %}

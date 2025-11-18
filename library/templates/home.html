@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusLibrary - Book Tracking System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --university-blue: #1a3a6c;
+            --accent-gold: #d4af37;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333;
+            --text-dark: #222;
+            --text-light: #666;
+            --success-green: #28a745;
+            --warning-orange: #ffc107;
+            --danger-red: #dc3545;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header and Navigation */
+        header {
+            background-color: var(--university-blue);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--accent-gold);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .nav-links a.active {
+            background-color: var(--accent-gold);
+            color: var(--university-blue);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .login-btn, .logout-btn {
+            background-color: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover, .logout-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--university-blue);
+        }
+
+        /* Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: var(--university-blue);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--university-blue);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .forgot-password {
+            color: var(--university-blue);
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background-color: var(--university-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #152a4d;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .form-footer a {
+            color: var(--university-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            padding: 3rem 0;
+            background-color: white;
+            margin-top: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--university-blue);
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Book Cards */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--university-blue);
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-header {
+            background: var(--university-blue);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-author {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .book-details {
+            padding: 1.5rem;
+        }
+
+        .book-info {
+            margin-bottom: 1rem;
+        }
+
+        .book-info div {
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .book-info span:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .book-info span:last-child {
+            color: var(--text-light);
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-borrow {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-borrow:hover {
+            background: #218838;
+        }
+
+        .btn-return {
+            background: var(--warning-orange);
+            color: black;
+        }
+
+        .btn-return:hover {
+            background: #e0a800;
+        }
+
+        /* Borrowing Records */
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+
+        .records-table th,
+        .records-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .records-table th {
+            background-color: var(--university-blue);
+            color: white;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-borrowed {
+            background: var(--warning-orange);
+            color: black;
+        }
+
+        .status-returned {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .status-overdue {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        /* Quick Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border-top: 4px solid var(--university-blue);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--university-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Login Required Message */
+        .login-required {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .login-required i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--university-blue);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>CampusLibrary</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active" data-target="my-books">My Books</a></li>
+                <li><a href="#" class="nav-link" data-target="borrow-book">Borrow Book</a></li>
+                <li><a href="#" class="nav-link" data-target="borrowing-history">Borrowing History</a></li>
+                <li><a href="#" class="nav-link" data-target="library-status">Library Status</a></li>
+            </ul>
+            <div class="user-actions">
+                <div class="user-info" id="user-info">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span id="username">User</span>
+                </div>
+                <button class="login-btn" id="login-btn">Student Login</button>
+                <button class="logout-btn" id="logout-btn" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <h2>Student Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">Student ID or Email</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit" class="submit-btn">Login</button>
+                <div class="form-footer">
+                    Don't have an account? <a href="#" id="register-link">Contact librarian</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Books Section -->
+    <section id="my-books" class="content-section active">
+        <div class="container">
+            <div class="section-title">
+                <h2>My Currently Borrowed Books</h2>
+                <p>Manage your borrowed books and check due dates</p>
+            </div>
+
+            <div id="login-required-mybooks" class="login-required" style="display: none;">
+                <i class="fas fa-lock"></i>
+                <h3>Login Required</h3>
+                <p>Please login to view your borrowed books</p>
+                <button class="login-btn" onclick="showLoginModal()" style="margin-top: 1rem;">Login Now</button>
+            </div>
+
+            <div id="my-books-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="current-books-count">0</div>
+                        <div class="stat-label">Books Currently Borrowed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="overdue-books-count">0</div>
+                        <div class="stat-label">Overdue Books</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-books-borrowed">0</div>
+                        <div class="stat-label">Total Books Borrowed</div>
+                    </div>
+                </div>
+
+                <div id="current-books-container">
+                    <!-- Currently borrowed books will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Borrow Book Section -->
+    <section id="borrow-book" class="content-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Available Books</h2>
+                <p>Browse and borrow available books from the library</p>
+            </div>
+
+            <div id="login-required-borrow" class="login-required" style="display: none;">
+                <i class="fas fa-lock"></i>
+                <h3>Login Required</h3>
+                <p>Please login to borrow books</p>
+                <button class="login-btn" onclick="showLoginModal()" style="margin-top: 1rem;">Login Now</button>
+            </div>
+
+            <div id="borrow-book-content">
+                <div class="books-grid" id="available-books-container">
+                    <!-- Available books will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Borrowing History Section -->
+    <section id="borrowing-history" class="content-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Borrowing History</h2>
+                <p>Complete record of all books you've borrowed</p>
+            </div>
+
+            <div id="login-required-history" class="login-required" style="display: none;">
+                <i class="fas fa-lock"></i>
+                <h3>Login Required</h3>
+                <p>Please login to view your borrowing history</p>
+                <button class="login-btn" onclick="showLoginModal()" style="margin-top: 1rem;">Login Now</button>
+            </div>
+
+            <div id="borrowing-history-content">
+                <table class="records-table">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Borrow Date</th>
+                            <th>Due Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="borrowing-history-body">
+                        <!-- Borrowing history will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Library Status Section -->
+    <section id="library-status" class="content-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Library Status</h2>
+                <p>Overview of library books and borrowing statistics</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-library-books">0</div>
+                    <div class="stat-label">Total Books in Library</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="available-books-count">0</div>
+                    <div class="stat-label">Books Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="borrowed-books-count">0</div>
+                    <div class="stat-label">Books Currently Borrowed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="overdue-library-count">0</div>
+                    <div class="stat-label">Overdue Books</div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h3>All Library Books</h3>
+            </div>
+
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Total Copies</th>
+                        <th>Available</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="all-books-body">
+                    <!-- All books will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            
+        </div>
+    </footer>
+
+    <script>
+        // Authentication System
+        class AuthSystem {
+            constructor() {
+                this.currentUser = null;
+                this.checkLoginStatus();
+            }
+
+            checkLoginStatus() {
+                const userData = localStorage.getItem('library_user') || sessionStorage.getItem('library_user');
+                if (userData) {
+                    this.currentUser = JSON.parse(userData);
+                    this.updateUI();
+                }
+            }
+
+            login(username, password, rememberMe) {
+                // Simulate login - in real app, this would be an API call
+                if (username && password) {
+                    const userData = {
+                        username: username,
+                        name: username.split('@')[0],
+                        studentId: 'STU' + Math.random().toString().substr(2, 6),
+                        isLoggedIn: true
+                    };
+
+                    if (rememberMe) {
+                        localStorage.setItem('library_user', JSON.stringify(userData));
+                    } else {
+                        sessionStorage.setItem('library_user', JSON.stringify(userData));
+                    }
+
+                    this.currentUser = userData;
+                    this.updateUI();
+                    return true;
+                }
+                return false;
+            }
+
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('library_user');
+                sessionStorage.removeItem('library_user');
+                this.updateUI();
+            }
+
+            isLoggedIn() {
+                return this.currentUser !== null;
+            }
+
+            updateUI() {
+                const loginBtn = document.getElementById('login-btn');
+                const logoutBtn = document.getElementById('logout-btn');
+                const userInfo = document.getElementById('user-info');
+                const usernameSpan = document.getElementById('username');
+                const userAvatar = document.getElementById('user-avatar');
+
+                if (this.isLoggedIn()) {
+                    loginBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+                    userInfo.style.display = 'flex';
+                    usernameSpan.textContent = this.currentUser.name;
+                    userAvatar.textContent = this.currentUser.name.charAt(0).toUpperCase();
+                    
+                    // Show content sections
+                    this.showContentSections();
+                } else {
+                    loginBtn.style.display = 'block';
+                    logoutBtn.style.display = 'none';
+                    userInfo.style.display = 'none';
+                    
+                    // Show login required messages
+                    this.showLoginRequired();
+                }
+            }
+
+            showContentSections() {
+                document.querySelectorAll('#my-books-content, #borrow-book-content, #borrowing-history-content').forEach(el => {
+                    el.style.display = 'block';
+                });
+                document.querySelectorAll('#login-required-mybooks, #login-required-borrow, #login-required-history').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+
+            showLoginRequired() {
+                document.querySelectorAll('#my-books-content, #borrow-book-content, #borrowing-history-content').forEach(el => {
+                    el.style.display = 'none';
+                });
+                document.querySelectorAll('#login-required-mybooks, #login-required-borrow, #login-required-history').forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+        }
+
+        // Initialize auth system
+        const auth = new AuthSystem();
+
+        // Library Database Simulation
+        class LibrarySystem {
+            constructor() {
+                this.initDatabase();
+            }
+
+            initDatabase() {
+                // Initialize books if not exists
+                if (!localStorage.getItem('library_books')) {
+                    const initialBooks = [
+                        {
+                            id: 1,
+                            title: "Thermodynamics: An Engineering Approach",
+                            author: "Yunus A",
+                            isbn: "978-0123456789",
+                            category: "Engineering",
+                            totalCopies: 5,
+                            availableCopies: 3
+                        },
+                        {
+                            id: 2,
+                            title: "Fluid Mechanics: Fundamentals and Applications",
+                            author: "John M. Cimbala",
+                            isbn: "978-0987654321",
+                            category: "Fluid Mechanics",
+                            totalCopies: 8,
+                            availableCopies: 6
+                        },
+                        {
+                            id: 3,
+                            title: "The Great Gatsby",
+                            author: "F. Scott Fitzgerald",
+                            isbn: "978-1122334455",
+                            category: "Literature",
+                            totalCopies: 3,
+                            availableCopies: 1
+                        },
+                        {
+                            id: 4,
+                            title: "Computer Science Principles",
+                            author: "Sarah Chen",
+                            isbn: "978-4455667788",
+                            category: "Computer Science",
+                            totalCopies: 4,
+                            availableCopies: 4
+                        }
+                    ];
+                    localStorage.setItem('library_books', JSON.stringify(initialBooks));
+                }
+
+                // Initialize borrowing records if not exists
+                if (!localStorage.getItem('borrowing_records')) {
+                    const initialRecords = [
+                        {
+                            id: 1,
+                            bookId: 1,
+                            bookTitle: "Power System Stability and Control ",
+                            bookAuthor: "Prabha Kundur",
+                            studentId: "STU123456",
+                            borrowDate: "2023-11-20",
+                            dueDate: "2023-12-04",
+                            returnDate: null,
+                            status: "borrowed"
+                        },
+                        {
+                            id: 2,
+                            bookId: 3,
+                            bookTitle: "The Great Gatsby",
+                            bookAuthor: "F. Scott Fitzgerald",
+                            studentId: "STU123456",
+                            borrowDate: "2023-11-25",
+                            dueDate: "2023-12-09",
+                            returnDate: null,
+                            status: "borrowed"
+                        }
+                    ];
+                    localStorage.setItem('borrowing_records', JSON.stringify(initialRecords));
+                }
+            }
+
+            // Book operations
+            getAllBooks() {
+                return JSON.parse(localStorage.getItem('library_books') || '[]');
+            }
+
+            getAvailableBooks() {
+                return this.getAllBooks().filter(book => book.availableCopies > 0);
+            }
+
+            // Borrowing operations
+            getBorrowingRecords() {
+                return JSON.parse(localStorage.getItem('borrowing_records') || '[]');
+            }
+
+            getCurrentBorrowings() {
+                if (!auth.isLoggedIn()) return [];
+                return this.getBorrowingRecords().filter(record => 
+                    record.status === 'borrowed' && record.studentId === auth.currentUser.studentId
+                );
+            }
+
+            getBorrowingHistory() {
+                if (!auth.isLoggedIn()) return [];
+                return this.getBorrowingRecords().filter(record => 
+                    record.studentId === auth.currentUser.studentId
+                );
+            }
+
+            borrowBook(bookId) {
+                if (!auth.isLoggedIn()) {
+                    alert('Please login to borrow books');
+                    showLoginModal();
+                    return false;
+                }
+
+                const books = this.getAllBooks();
+                const book = books.find(b => b.id === bookId);
+                
+                if (book && book.availableCopies > 0) {
+                    // Update book availability
+                    book.availableCopies--;
+                    localStorage.setItem('library_books', JSON.stringify(books));
+
+                    // Create borrowing record
+                    const records = this.getBorrowingRecords();
+                    const borrowDate = new Date().toISOString().split('T')[0];
+                    const dueDate = new Date();
+                    dueDate.setDate(dueDate.getDate() + 14); // 2 weeks loan period
+                    
+                    const newRecord = {
+                        id: records.length > 0 ? Math.max(...records.map(r => r.id)) + 1 : 1,
+                        bookId: book.id,
+                        bookTitle: book.title,
+                        bookAuthor: book.author,
+                        studentId: auth.currentUser.studentId,
+                        borrowDate: borrowDate,
+                        dueDate: dueDate.toISOString().split('T')[0],
+                        returnDate: null,
+                        status: 'borrowed'
+                    };
+
+                    records.push(newRecord);
+                    localStorage.setItem('borrowing_records', JSON.stringify(records));
+                    
+                    return true;
+                }
+                return false;
+            }
+
+            returnBook(recordId) {
+                const records = this.getBorrowingRecords();
+                const record = records.find(r => r.id === recordId);
+                
+                if (record && record.status === 'borrowed') {
+                    // Update record
+                    record.returnDate = new Date().toISOString().split('T')[0];
+                    record.status = 'returned';
+
+                    // Update book availability
+                    const books = this.getAllBooks();
+                    const book = books.find(b => b.id === record.bookId);
+                    if (book) {
+                        book.availableCopies++;
+                    }
+
+                    localStorage.setItem('borrowing_records', JSON.stringify(records));
+                    localStorage.setItem('library_books', JSON.stringify(books));
+                    
+                    return true;
+                }
+                return false;
+            }
+
+            // Statistics
+            getStatistics() {
+                const books = this.getAllBooks();
+                const records = this.getBorrowingRecords();
+                const currentBorrowings = this.getCurrentBorrowings();
+                
+                const today = new Date();
+                const overdueBooks = currentBorrowings.filter(record => {
+                    const dueDate = new Date(record.dueDate);
+                    return dueDate < today;
+                });
+
+                return {
+                    totalBooks: books.length,
+                    availableBooks: books.reduce((sum, book) => sum + book.availableCopies, 0),
+                    borrowedBooks: records.filter(r => r.status === 'borrowed').length,
+                    overdueBooks: overdueBooks.length,
+                    totalBorrowed: records.length,
+                    userBorrowed: currentBorrowings.length,
+                    userOverdue: overdueBooks.length,
+                    userTotalBorrowed: this.getBorrowingHistory().length
+                };
+            }
+        }
+
+        // Initialize library system
+        const library = new LibrarySystem();
+
+        // UI Management
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Show selected section and activate nav link
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`[data-target="${sectionId}"]`).classList.add('active');
+
+            // Refresh section content
+            refreshSection(sectionId);
+        }
+
+        function refreshSection(sectionId) {
+            switch(sectionId) {
+                case 'my-books':
+                    refreshMyBooks();
+                    break;
+                case 'borrow-book':
+                    refreshAvailableBooks();
+                    break;
+                case 'borrowing-history':
+                    refreshBorrowingHistory();
+                    break;
+                case 'library-status':
+                    refreshLibraryStatus();
+                    break;
+            }
+        }
+
+        function refreshMyBooks() {
+            if (!auth.isLoggedIn()) return;
+
+            const currentBorrowings = library.getCurrentBorrowings();
+            const container = document.getElementById('current-books-container');
+            const stats = library.getStatistics();
+
+            // Update statistics
+            document.getElementById('current-books-count').textContent = stats.userBorrowed;
+            document.getElementById('overdue-books-count').textContent = stats.userOverdue;
+            document.getElementById('total-books-borrowed').textContent = stats.userTotalBorrowed;
+
+            if (currentBorrowings.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--text-light);">
+                        <i class="fas fa-book" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3>No books currently borrowed</h3>
+                        <p>Visit the "Borrow Book" section to find books to borrow.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentBorrowings.map(record => {
+                const dueDate = new Date(record.dueDate);
+                const today = new Date();
+                const isOverdue = dueDate < today;
+                const daysRemaining = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                
+                return `
+                    <div class="book-card">
+                        <div class="book-header">
+                            <div class="book-title">${record.bookTitle}</div>
+                            <div class="book-author">by ${record.bookAuthor}</div>
+                        </div>
+                        <div class="book-details">
+                            <div class="book-info">
+                                <div>
+                                    <span>Borrowed on:</span>
+                                    <span>${formatDate(record.borrowDate)}</span>
+                                </div>
+                                <div>
+                                    <span>Due date:</span>
+                                    <span style="color: ${isOverdue ? 'var(--danger-red)' : 'var(--text-light)'}; font-weight: ${isOverdue ? '600' : 'normal'}">
+                                        ${formatDate(record.dueDate)} 
+                                        ${isOverdue ? '(OVERDUE)' : `(${daysRemaining} days left)`}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="book-actions">
+                                <button class="btn btn-return" onclick="returnBook(${record.id})">
+                                    <i class="fas fa-undo"></i> Return Book
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function refreshAvailableBooks() {
+            const availableBooks = library.getAvailableBooks();
+            const container = document.getElementById('available-books-container');
+
+            container.innerHTML = availableBooks.map(book => `
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title">${book.title}</div>
+                        <div class="book-author">by ${book.author}</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-info">
+                            <div>
+                                <span>ISBN:</span>
+                                <span>${book.isbn}</span>
+                            </div>
+                            <div>
+                                <span>Category:</span>
+                                <span>${book.category}</span>
+                            </div>
+                            <div>
+                                <span>Available copies:</span>
+                                <span>${book.availableCopies}/${book.totalCopies}</span>
+                            </div>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn btn-borrow" onclick="borrowBook(${book.id})">
+                                <i class="fas fa-book"></i> Borrow Book
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function refreshBorrowingHistory() {
+            if (!auth.isLoggedIn()) return;
+
+            const history = library.getBorrowingHistory();
+            const tbody = document.getElementById('borrowing-history-body');
+
+            tbody.innerHTML = history.map(record => {
+                const dueDate = new Date(record.dueDate);
+                const today = new Date();
+                let statusClass = 'status-returned';
+                let statusText = 'Returned';
+
+                if (record.status === 'borrowed') {
+                    statusClass = dueDate < today ? 'status-overdue' : 'status-borrowed';
+                    statusText = dueDate < today ? 'Overdue' : 'Borrowed';
+                }
+
+                return `
+                    <tr>
+                        <td>${record.bookTitle}</td>
+                        <td>${record.bookAuthor}</td>
+                        <td>${formatDate(record.borrowDate)}</td>
+                        <td>${formatDate(record.dueDate)}</td>
+                        <td>${record.returnDate ? formatDate(record.returnDate) : '-'}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function refreshLibraryStatus() {
+            const books = library.getAllBooks();
+            const stats = library.getStatistics();
+            const tbody = document.getElementById('all-books-body');
+
+            // Update statistics
+            document.getElementById('total-library-books').textContent = stats.totalBooks;
+            document.getElementById('available-books-count').textContent = stats.availableBooks;
+            document.getElementById('borrowed-books-count').textContent = stats.borrowedBooks;
+            document.getElementById('overdue-library-count').textContent = stats.overdueBooks;
+
+            tbody.innerHTML = books.map(book => `
+                <tr>
+                    <td>${book.title}</td>
+                    <td>${book.author}</td>
+                    <td>${book.isbn}</td>
+                    <td>${book.totalCopies}</td>
+                    <td>${book.availableCopies}</td>
+                    <td>
+                        <span class="status-badge ${book.availableCopies > 0 ? 'status-returned' : 'status-borrowed'}">
+                            ${book.availableCopies > 0 ? 'Available' : 'All Borrowed'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Login Modal Functions
+        function showLoginModal() {
+            document.getElementById('login-modal').style.display = 'flex';
+        }
+
+        function hideLoginModal() {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('login-form').reset();
+        }
+
+        // Action functions
+        function borrowBook(bookId) {
+            if (library.borrowBook(bookId)) {
+                alert('Book borrowed successfully! Due in 2 weeks.');
+                refreshAvailableBooks();
+                refreshMyBooks();
+                refreshLibraryStatus();
+            } else {
+                alert('Sorry, this book is no longer available.');
+            }
+        }
+
+        function returnBook(recordId) {
+            if (library.returnBook(recordId)) {
+                alert('Book returned successfully!');
+                refreshMyBooks();
+                refreshAvailableBooks();
+                refreshBorrowingHistory();
+                refreshLibraryStatus();
+            } else {
+                alert('Error returning book.');
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showSection(this.getAttribute('data-target'));
+                });
+            });
+
+            // Login modal
+            document.getElementById('login-btn').addEventListener('click', showLoginModal);
+            document.querySelector('.close-btn').addEventListener('click', hideLoginModal);
+            document.getElementById('logout-btn').addEventListener('click', () => auth.logout());
+
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+                const rememberMe = document.getElementById('remember-me').checked;
+
+                if (auth.login(username, password, rememberMe)) {
+                    hideLoginModal();
+                    refreshMyBooks();
+                    refreshBorrowingHistory();
+                    alert(`Welcome back, ${auth.currentUser.name}!`);
+                } else {
+                    alert('Please enter valid credentials.');
+                }
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('login-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideLoginModal();
+                }
+            });
+
+            // Initial load
+            refreshAvailableBooks();
+            refreshLibraryStatus();
+            if (auth.isLoggedIn()) {
+                refreshMyBooks();
+                refreshBorrowingHistory();
+            }
+        });
+    </script>
+</body>
+</html>
